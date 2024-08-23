@@ -8,4 +8,14 @@ class User < ApplicationRecord
 
   # Associations
   has_many :events, dependent: :destroy
+
+  # Callbacks
+  before_save :downcase_email
+
+  private
+
+  def downcase_email
+    self.email = email.downcase if email.present?
+  end
+
 end
