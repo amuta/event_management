@@ -7,4 +7,9 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  # POST /signup - Register a new user (Returns an authentication token).
+  post "/signup", to: "authentication#signup"
+  # POST /login - Authenticate a user and return a token.
+  post "/login", to: "authentication#login"
 end
