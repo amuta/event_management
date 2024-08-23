@@ -1,4 +1,3 @@
-# spec/factories/events.rb
 FactoryBot.define do
   factory :event do
     sequence(:name) { |n| "Sample Event #{n}" }
