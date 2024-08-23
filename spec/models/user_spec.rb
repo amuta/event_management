@@ -11,4 +11,12 @@ RSpec.describe User, type: :model do
     it { should_not allow_value('invalid_email').for(:email) }
     it { should validate_presence_of(:password_digest) }
   end
+
+  describe 'Callbacks' do
+    it 'downcases the email before saving' do
+      user = create(:user, email: 'User@Example.com')
+      expect(user.reload.email).to eq('user@example.com')
+    end
+  end
+
 end
