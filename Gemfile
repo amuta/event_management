@@ -43,6 +43,7 @@ group :development, :test do
   gem 'shoulda-matchers'
   gem 'rswag'
   gem 'byebug'
+  gem 'faker'
 end
 
 group :development do
@@ -52,3 +53,4 @@ end
 
 gem "bcrypt"
 gem "jwt"
+gem "kaminari", "~> 1.2"
