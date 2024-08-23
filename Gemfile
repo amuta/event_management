@@ -40,6 +40,7 @@ group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
   gem "rspec-rails"
   gem "factory_bot_rails"
+  gem 'shoulda-matchers'
 end
 
 group :development do
@@ -47,3 +48,5 @@ group :development do
   # gem "spring"
 end
 
+
+gem "bcrypt", "~> 3.1"
