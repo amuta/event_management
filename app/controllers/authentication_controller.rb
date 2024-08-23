@@ -1,11 +1,10 @@
 class AuthenticationController < ApplicationController
-  PASSWORD_MIN_LENGTH = 6
-
-  before_action :validate_email
-  before_action :validate_password, only: :signup
-
   def signup
+    return unless have_required_params(:email, :name, :password, :password_confirmation)
+    return unless password_confirmation_match
+
     user = User.new(user_params)
+
     if user.save
       render json: { token: user.auth_token }, status: :created
     else
@@ -14,9 +13,11 @@ class AuthenticationController < ApplicationController
   end
 
   def login
-    user = User.find_by_email(user_params[:email])
+    return unless have_required_params(:email, :password)
 
-    if user&.authenticate(user_params[:password])
+    user = User.find_by_email(login_params[:email])
+
+    if user&.authenticate(login_params[:password])
       render json: { token: user.auth_token }, status: :ok
     else
       render json: { error: 'Invalid email or password' }, status: :unauthorized
@@ -26,22 +27,29 @@ class AuthenticationController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:email, :password, :name)
+    params.permit(:email, :name, :password)
+  end
+  
+  def login_params
+    params.permit(:email, :password)
   end
 
-  def validate_email
-    email = user_params[:email]
+  def have_required_params(*keys)
+    keys.each do |key|
+      if params[key].blank?
+        render json: { error: "#{key.to_s.humanize} is required" }, status: :unprocessable_entity
+        return false
+      end
+    end
 
-    return if email =~ URI::MailTo::EMAIL_REGEXP
-
-    render json: { error: 'Invalid email format' }, status: :unprocessable_entity
+    true
   end
 
-  def validate_password
-    password = user_params[:password]
-    
-    return if password.present? && password.length >= PASSWORD_MIN_LENGTH
+  def password_confirmation_match
+    return true if params[:password] == params[:password_confirmation]  
 
-    render json: { error: 'Password must be at least 6 characters long' }, status: :unprocessable_entity
+    render json: { error: 'Password and password confirmation do not match' }, status: :unprocessable_entity
+
+    false
   end
 end
