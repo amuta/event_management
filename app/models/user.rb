@@ -12,6 +12,10 @@ class User < ApplicationRecord
   # Callbacks
   before_save :downcase_email
 
+  def auth_token
+    AuthenticationTokenService.encode(self.id)
+  end
+
   private
 
   def downcase_email
