@@ -1,0 +1,123 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/signup":
+    post:
+      summary: Creates a user and returns an authentication token
+      tags:
+      - Authentication
+      parameters: []
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        '422':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                      example: Email is invalid
+                required:
+                - errors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: Email of the user
+                  example: user@example.com
+                name:
+                  type: string
+                  description: Name of the user
+                  example: John Doe
+                password:
+                  type: string
+                  description: Password for the user account
+                  example: securePassword123
+                password_confirmation:
+                  type: string
+                  description: Confirmation of the password
+                  example: securePassword123
+              required:
+              - email
+              - name
+              - password
+              - password_confirmation
+  "/login":
+    post:
+      summary: Authenticates a user and returns an authentication token
+      tags:
+      - Authentication
+      parameters: []
+      responses:
+        '200':
+          description: User authenticated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        '401':
+          description: Invalid email or password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid email or password
+        '422':
+          description: Password is required
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Password is required
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: Email of the user
+                  example: user@example.com
+                password:
+                  type: string
+                  description: Password for the user account
+                  example: securePassword123
+              required:
+              - email
+              - password
+servers:
+- url: https://{defaultHost}
+  variables:
+    defaultHost:
+      default: www.example.com
