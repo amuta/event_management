@@ -86,9 +86,11 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    example: Invalid email or password
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                      example: Invalid email or password
         '422':
           description: Password is required
           content:
@@ -98,7 +100,12 @@ paths:
                 properties:
                   error:
                     type: string
-                    example: Password is required
+                    example: Email is required
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                      example: Password is required
       requestBody:
         content:
           application/json:
@@ -116,8 +123,367 @@ paths:
               required:
               - email
               - password
+  "/events":
+    get:
+      summary: Retrieves a list of events
+      tags:
+      - Events
+      parameters:
+      - name: page
+        in: query
+        description: Page number
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of events per page
+        schema:
+          type: integer
+      - name: user_id
+        in: query
+        description: Filter by User ID
+        schema:
+          type: integer
+      - name: start_time
+        in: query
+        format: date-time
+        description: Filter by start time (events starting from this time onwards)
+        schema:
+          type: string
+      - name: end_time
+        in: query
+        format: date-time
+        description: Filter by end time (events ending before this time)
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: Filter by event name (partial match)
+        schema:
+          type: string
+      - name: location
+        in: query
+        description: Filter by event location (partial match)
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Events retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  events:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        description:
+                          type: string
+                        location:
+                          type: string
+                        start_time:
+                          type: string
+                          format: date-time
+                        end_time:
+                          type: string
+                          format: date-time
+                        user_id:
+                          type: integer
+                  page:
+                    type: integer
+                  total_pages:
+                    type: integer
+    post:
+      summary: Creates an event
+      tags:
+      - Events
+      parameters:
+      - name: Authorization
+        in: header
+        description: JWT Token
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Event created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  location:
+                    type: string
+                  start_time:
+                    type: string
+                    format: date-time
+                  end_time:
+                    type: string
+                    format: date-time
+                  user_id:
+                    type: integer
+        '422':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                      example: Name can't be blank
+                required:
+                - errors
+        '401':
+          description: Only authenticated users can create events
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                      example: Unauthorized
+                required:
+                - errors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the event
+                  example: Tech Meetup
+                description:
+                  type: string
+                  description: Description of the event
+                  example: A meetup for tech enthusiasts
+                location:
+                  type: string
+                  description: Location of the event
+                  example: 123 Main St
+                start_time:
+                  type: string
+                  format: date-time
+                  description: Start time of the event
+                  example: '2024-08-30 18:00:00'
+                end_time:
+                  type: string
+                  format: date-time
+                  description: End time of the event
+                  example: '2024-08-30 20:00:00'
+              required:
+              - name
+              - location
+              - start_time
+              - end_time
+  "/events/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: ID of the event
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Retrieves an event
+      tags:
+      - Events
+      responses:
+        '200':
+          description: Event retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  location:
+                    type: string
+                  start_time:
+                    type: string
+                    format: date-time
+                  end_time:
+                    type: string
+                    format: date-time
+                  user_id:
+                    type: integer
+        '404':
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                      example: Event not found
+    put:
+      summary: Updates an event
+      tags:
+      - Events
+      parameters:
+      - name: Authorization
+        in: header
+        description: JWT Token
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Event updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  location:
+                    type: string
+                  start_time:
+                    type: string
+                    format: date-time
+                  end_time:
+                    type: string
+                    format: date-time
+                  user_id:
+                    type: integer
+        '422':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                      example: Name can't be blank
+                required:
+                - errors
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                      example: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the event
+                  example: Updated Tech Meetup
+                description:
+                  type: string
+                  description: Updated description of the event
+                  example: An updated meetup for tech enthusiasts
+                location:
+                  type: string
+                  description: Updated location of the event
+                  example: 123 Updated Main St
+                start_time:
+                  type: string
+                  format: date-time
+                  description: Updated start time of the event
+                  example: '2024-08-30 19:00:00'
+                end_time:
+                  type: string
+                  format: date-time
+                  description: Updated end time of the event
+                  example: '2024-08-30 21:00:00'
+              anyOf:
+              - name
+              - description
+              - location
+              - start_time
+              - end_time
+    delete:
+      summary: Deletes an event
+      tags:
+      - Events
+      parameters:
+      - name: Authorization
+        in: header
+        description: JWT Token
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: ID of the event
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: Event deleted successfully
+        '404':
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                      example: Event not found
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                      example: Unauthorized
 servers:
-- url: https://{defaultHost}
+- url: http://{defaultHost}
   variables:
     defaultHost:
-      default: www.example.com
+      default: localhost:3000

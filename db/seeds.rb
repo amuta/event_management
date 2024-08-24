@@ -32,8 +32,8 @@ users.each do |user|
       name: Faker::Lorem.sentence,
       description: Faker::Lorem.paragraph,
       location: Faker::Address.full_address,
-      start_time: 1.week.from_now,
-      end_time: 2.weeks.from_now + 2.hours,
+      start_time: 1.week.from_now + (rand(1..10)).days + rand(1..24).hours,
+      end_time: 3.weeks.from_now + (rand(1..10)).days + rand(1..24).hours,
       user: user
     )
   end
