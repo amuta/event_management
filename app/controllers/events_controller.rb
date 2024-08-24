@@ -15,9 +15,10 @@ class EventsController < ApplicationController
     @event = current_user.events.build(event_params)
     if @event.save
       render json: @event.as_json, status: :created
-    else
-      render json: error_handler(@event), status: :unprocessable_entity
+      return
     end
+
+    render_errors(@event, status: :unprocessable_entity)
   end
 
   # GET /events/:id
@@ -32,7 +33,7 @@ class EventsController < ApplicationController
       return
     end
 
-    render json: error_handler(@event), status: :unprocessable_entity
+    render_errors(@event, status: :unprocessable_entity)
   end
 
   # DELETE /events/:id
@@ -46,7 +47,7 @@ class EventsController < ApplicationController
   def set_event
     @event = Event.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render json: error_handler(message: 'Event not found'), status: :not_found
+    render_errors('Event not found', status: :not_found)
   end
 
   def event_params
@@ -56,17 +57,11 @@ class EventsController < ApplicationController
   def authorize_user!
     return if event_belongs_to_user?(@event)
 
-    render json: error_handler(message: 'You are not authorized to perform this action'), status: :unauthorized
+    # render json: error_handler(message: 'You are not authorized to perform this action'), status: :unauthorized
+    render_errors('You are not authorized to perform this action', status: :unauthorized)
   end
 
   def event_belongs_to_user?(event)
     current_user.id == event.user_id
-  end
-
-
-  def error_handler(object=nil, message: nil)
-    errors = object.respond_to?(:errors) ? object.errors.full_messages : [message] || ['Something went wrong - Undefined error']
-
-    { errors: errors }
   end
 end

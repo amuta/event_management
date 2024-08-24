@@ -3,10 +3,9 @@ require 'rails_helper'
 require 'swagger_helper'
 
 RSpec.describe 'Events API', type: :request do
+  let(:user) { create(:user) }
+  let(:Authorization) { "Bearer #{user.auth_token}" }
   path '/events' do
-    let(:user) { create(:user) }
-    let(:Authorization) { "Bearer #{user.auth_token}" }
-
     get 'Retrieves a list of events' do
       tags 'Events'
       produces 'application/json'
@@ -40,7 +39,6 @@ RSpec.describe 'Events API', type: :request do
         run_test!
       end
     end
-
 
     post 'Creates an event' do
       tags 'Events'
