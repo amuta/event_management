@@ -1,11 +1,13 @@
 class EventsController < ApplicationController
+  include EventFilterConcern
+
   skip_before_action :authenticate_user!, only: [:index, :show]
   before_action :set_event, only: [:show, :update, :destroy]
   before_action :authorize_user!, only: [:update, :destroy]
 
   # GET /events
   def index
-    @events = Event.all.page(params[:page]).per(params[:per_page])
+    @events = filter(Event.all).order(start_time: :desc).page(params[:page]).per(params[:per_page])
     
     render json: { events: @events.map(&:as_json), page: @events.current_page, total_pages: @events.total_pages }
   end
@@ -43,6 +45,7 @@ class EventsController < ApplicationController
   end
 
   private
+
 
   def set_event
     @event = Event.find(params[:id])
