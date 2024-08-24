@@ -18,14 +18,15 @@ class ApplicationController < ActionController::API
   private
 
   def authorize_request
-    token = request.headers['Authorization']
+    token = request.headers['Authorization'].split(' ').last
 
     begin
       decoded = AuthenticationTokenService.decode(token)
       
       User.find(decoded[:user_id])
-    rescue ActiveRecord::RecordNotFound, JWT::DecodeError, JWT::VerificationError
-      render json: { error: 'Unauthorized' }, status: :unauthorized
+    rescue ActiveRecord::RecordNotFound, JWT::DecodeError, JWT::VerificationError, JWT::ExpiredSignature
+
+      nil
     end
   end
 end

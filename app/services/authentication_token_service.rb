@@ -13,7 +13,7 @@ class AuthenticationTokenService
     decoded = JWT.decode(token, SECRET_KEY).first
     HashWithIndifferentAccess.new(decoded)
 
-  rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError
-    raise 'Invalid or expired token'
+  rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError => e
+    raise e.class, e.message
   end
 end
