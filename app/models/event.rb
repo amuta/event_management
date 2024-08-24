@@ -15,8 +15,8 @@ class Event < ApplicationRecord
       name: name,
       description: description,
       location: location,
-      start_time: start_time.strftime("%Y-%m-%d %H:%M:%S"),
-      end_time: end_time.strftime("%Y-%m-%d %H:%M:%S"),
+      start_time: start_time.rfc3339,
+      end_time: end_time.rfc3339,
       user_id: user_id
     }
   end
