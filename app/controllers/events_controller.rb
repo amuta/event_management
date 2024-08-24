@@ -57,7 +57,6 @@ class EventsController < ApplicationController
   def authorize_user!
     return if event_belongs_to_user?(@event)
 
-    # render json: error_handler(message: 'You are not authorized to perform this action'), status: :unauthorized
     render_errors('You are not authorized to perform this action', status: :unauthorized)
   end
 
