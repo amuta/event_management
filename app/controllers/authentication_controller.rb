@@ -1,4 +1,6 @@
 class AuthenticationController < ApplicationController
+  skip_before_action :authenticate_user!
+
   def signup
     return unless have_required_params(:email, :name, :password, :password_confirmation)
     return unless password_confirmation_match
@@ -8,7 +10,7 @@ class AuthenticationController < ApplicationController
     if user.save
       render json: { token: user.auth_token }, status: :created
     else
-      render json: { error: user.errors.full_messages }, status: :unprocessable_entity
+      render_errors(user, status: :unprocessable_entity)
     end
   end
 
@@ -20,7 +22,7 @@ class AuthenticationController < ApplicationController
     if user&.authenticate(login_params[:password])
       render json: { token: user.auth_token }, status: :ok
     else
-      render json: { error: 'Invalid email or password' }, status: :unauthorized
+      render_errors('Invalid email or password', status: :unauthorized)
     end
   end
 
@@ -35,20 +37,25 @@ class AuthenticationController < ApplicationController
   end
 
   def have_required_params(*keys)
+    missing_keys = []
+
     keys.each do |key|
       if params[key].blank?
-        render json: { error: "#{key.to_s.humanize} is required" }, status: :unprocessable_entity
-        return false
+        missing_keys << key
       end
     end
 
-    true
+    return true if missing_keys.empty?
+
+    render_errors("Missing required parameters: #{missing_keys.join(', ')}", status: :unprocessable_entity)
+
+    false
   end
 
   def password_confirmation_match
     return true if params[:password] == params[:password_confirmation]  
 
-    render json: { error: 'Password and password confirmation do not match' }, status: :unprocessable_entity
+    render_errors('Password and password confirmation do not match', status: :unprocessable_entity)
 
     false
   end

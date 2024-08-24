@@ -65,17 +65,22 @@ RSpec.describe 'Authentication API', type: :request do
                  token: { type: :string, example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' }
                }
 
-        let(:credentials) { { email: 'test@example.com', password: 'securePassword123' } }
+        let!(:user) { create(:user) }
+        let(:credentials) { { email: user.email, password: user.password } }
         run_test!
       end
 
       response '401', 'Invalid email or password' do
         schema type: :object,
                properties: {
-                 error: { type: :string, example: 'Invalid email or password' }
+                errors: {
+                  type: :array,
+                  items: { type: :string, example: 'Invalid email or password' }
+                }
                }
 
-        let(:credentials) { { email: 'test@example.com', password: 'wrongPassword' } }
+               let!(:user) { create(:user) }
+               let(:credentials) { { email: user.email, password: 'wrong_password' } }
         run_test!
       end
 
@@ -91,10 +96,12 @@ RSpec.describe 'Authentication API', type: :request do
 
       response '422', 'Password is required' do
         schema type: :object,
-               properties: {
-                 error: { type: :string, example: 'Password is required' }
-               }
-
+                properties: {
+                  errors: {
+                    type: :array,
+                    items: { type: :string, example: 'Password is required' }
+                  }
+                }
         let(:credentials) { { email: 'test@example.com' } }
         run_test!
       end

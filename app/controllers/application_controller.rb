@@ -4,7 +4,9 @@ class ApplicationController < ActionController::API
   def authenticate_user!
     @current_user = authorize_request
 
-    render json: { error: 'Unauthorized' }, status: :unauthorized unless current_user
+    return if @current_user
+
+    render_errors('Unauthorized', status: :unauthorized)
   end
 
   def current_user
@@ -18,7 +20,9 @@ class ApplicationController < ActionController::API
   private
 
   def authorize_request
-    token = request.headers['Authorization'].split(' ').last
+    token = request.headers['Authorization']&.split(' ')&.last
+
+    return unless token
 
     begin
       decoded = AuthenticationTokenService.decode(token)
@@ -28,5 +32,17 @@ class ApplicationController < ActionController::API
 
       nil
     end
+  end
+
+  def render_errors(object_or_message=nil, status:)
+    errors = []
+    
+    if object_or_message.respond_to?(:errors)
+      errors = object_or_message.errors.full_messages
+    elsif object_or_message.is_a?(String)
+      errors = [object_or_message || 'An Unknown Error Occurred']
+    end
+
+    render json: { errors: errors }, status: status
   end
 end
