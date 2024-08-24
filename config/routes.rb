@@ -14,4 +14,10 @@ Rails.application.routes.draw do
   post "/signup", to: "authentication#signup"
   # POST /login - Authenticate a user and return a token.
   post "/login", to: "authentication#login"
+
+  # GET /events - List all events.
+  # GET /events/:id - Get details of a specific event.
+  # PUT /events/:id - Update an event (only for the user who created the event).
+  # DELETE /events/:id - Delete an event (only for the user who created the event).
+  resources :events, only: [:index, :show, :create, :update, :destroy]
 end
