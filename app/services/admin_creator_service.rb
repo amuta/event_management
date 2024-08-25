@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AdminCreatorService
   class AdminRoleNotFound < StandardError; end
   class UserCreationError < StandardError; end

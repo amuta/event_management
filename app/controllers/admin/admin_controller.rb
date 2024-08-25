@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Admin
   class AdminController < ApplicationController
     before_action :set_user, only: %i[add_user_role remove_user_role index_user_roles]

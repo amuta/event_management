@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AuthenticationController < ApplicationController
   skip_before_action :authenticate_user!
 
@@ -31,7 +33,7 @@ class AuthenticationController < ApplicationController
   def user_params
     params.permit(:email, :name, :password)
   end
-  
+
   def login_params
     params.permit(:email, :password)
   end
@@ -40,9 +42,7 @@ class AuthenticationController < ApplicationController
     missing_keys = []
 
     keys.each do |key|
-      if params[key].blank?
-        missing_keys << key
-      end
+      missing_keys << key if params[key].blank?
     end
 
     return true if missing_keys.empty?
@@ -53,7 +53,7 @@ class AuthenticationController < ApplicationController
   end
 
   def password_confirmation_match
-    return true if params[:password] == params[:password_confirmation]  
+    return true if params[:password] == params[:password_confirmation]
 
     render_errors('Password and password confirmation do not match', status: :unprocessable_entity)
 

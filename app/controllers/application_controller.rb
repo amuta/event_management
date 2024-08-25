@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ApplicationController < ActionController::API
   before_action :authenticate_user!
 
@@ -20,7 +22,7 @@ class ApplicationController < ActionController::API
   private
 
   def authorize_request
-    token = request.headers['Authorization']&.split(' ')&.last
+    token = request.headers['Authorization']&.split&.last
 
     return unless token
 

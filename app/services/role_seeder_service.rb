@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RoleSeederService
   class RoleSeedingError < StandardError; end
 
@@ -44,7 +46,8 @@ module RoleSeederService
     role.permissions = role_data[:permissions]
 
     unless role.save(validate: false)
-      raise RoleSeedingError, "Failed to create/update role '#{role.name}': #{role.errors.full_messages.join(', ')}"
+      raise RoleSeedingError,
+            "Failed to create/update role '#{role.name}': #{role.errors.full_messages.join(', ')}"
     end
 
     puts "Role '#{role.name}' has been created/updated."
