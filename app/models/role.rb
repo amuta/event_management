@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Role < ApplicationRecord
   serialize :permissions, coder: YAML, class_name: Array
   validates :name, presence: true, uniqueness: true

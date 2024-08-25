@@ -1,0 +1,40 @@
+# .rubocop.yml
+
+# Allow some flexibility in complex conditions and method length
+Metrics/AbcSize:
+  Max: 20
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Metrics/PerceivedComplexity:
+  Max: 10
+
+Metrics/MethodLength:
+  Max: 15
+
+Metrics/BlockLength:
+  Max: 30
+  Exclude:
+    - 'spec/**/*.rb'  # Ignore block length in spec files
+
+# Disable documentation for classes and modules
+Style/Documentation:
+  Enabled: false
+  
+# Allow multi-line chains of blocks
+Style/MultilineBlockChain:
+  Enabled: false
+
+# Ignore the naming convention for predicate methods
+Naming/PredicateName:
+  Enabled: false
+
+# Global exclusions
+AllCops:
+  Exclude:
+    - 'bin/*'
+    - 'db/schema.rb'
+    - 'db/migrate/**/*.rb'
+    - 'spec/**/*.rb'
+    - 'lib/tasks/**/*.rake'

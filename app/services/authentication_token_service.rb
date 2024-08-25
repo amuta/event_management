@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AuthenticationTokenService
   class UserTokenError < StandardError; end
 

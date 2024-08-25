@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'swagger_helper'
 
 RSpec.describe 'Authentication API', type: :request do
@@ -15,7 +17,7 @@ RSpec.describe 'Authentication API', type: :request do
           password: { type: :string, description: 'Password for the user account', example: 'securePassword123' },
           password_confirmation: { type: :string, description: 'Confirmation of the password', example: 'securePassword123' }
         },
-        required: ['email', 'name', 'password', 'password_confirmation']
+        required: %w[email name password password_confirmation]
       }
 
       response '201', 'User created successfully' do
@@ -56,7 +58,7 @@ RSpec.describe 'Authentication API', type: :request do
           email: { type: :string, description: 'Email of the user', example: 'user@example.com' },
           password: { type: :string, description: 'Password for the user account', example: 'securePassword123' }
         },
-        required: ['email', 'password']
+        required: %w[email password]
       }
 
       response '200', 'User authenticated successfully' do
@@ -73,14 +75,14 @@ RSpec.describe 'Authentication API', type: :request do
       response '401', 'Invalid email or password' do
         schema type: :object,
                properties: {
-                errors: {
-                  type: :array,
-                  items: { type: :string, example: 'Invalid email or password' }
-                }
+                 errors: {
+                   type: :array,
+                   items: { type: :string, example: 'Invalid email or password' }
+                 }
                }
 
-               let!(:user) { create(:user) }
-               let(:credentials) { { email: user.email, password: 'wrong_password' } }
+        let!(:user) { create(:user) }
+        let(:credentials) { { email: user.email, password: 'wrong_password' } }
         run_test!
       end
 
@@ -96,12 +98,12 @@ RSpec.describe 'Authentication API', type: :request do
 
       response '422', 'Password is required' do
         schema type: :object,
-                properties: {
-                  errors: {
-                    type: :array,
-                    items: { type: :string, example: 'Password is required' }
-                  }
-                }
+               properties: {
+                 errors: {
+                   type: :array,
+                   items: { type: :string, example: 'Password is required' }
+                 }
+               }
         let(:credentials) { { email: 'test@example.com' } }
         run_test!
       end

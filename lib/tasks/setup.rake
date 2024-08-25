@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :setup do
   desc 'Generate a sample secret_key for development if not present'
   task seed_roles: :environment do
