@@ -11,21 +11,21 @@ class Event < ApplicationRecord
 
   def as_json
     {
-      id: id,
-      name: name,
-      description: description,
-      location: location,
-      start_time: start_time.rfc3339,
-      end_time: end_time.rfc3339,
-      user_id: user_id
+      'id' => id,
+      'name' => name,
+      'description' => description,
+      'location' => location,
+      'start_time' => start_time.rfc3339,
+      'end_time' => end_time.rfc3339,
+      'user_id' => user_id
     }
   end
 
   private
 
   def end_time_after_start_time
-    if end_time < start_time
-      errors.add(:end_time, "must be after the start time")
-    end
+    return unless end_time < start_time
+
+    errors.add(:end_time, 'must be after the start time')
   end
 end
