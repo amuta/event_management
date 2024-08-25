@@ -28,7 +28,7 @@ class ApplicationController < ActionController::API
       decoded = AuthenticationTokenService.decode(token)
 
       User.includes(:roles).find(decoded[:user_id])
-    rescue ActiveRecord::RecordNotFound, JWT::DecodeError, JWT::VerificationError, JWT::ExpiredSignature
+    rescue ActiveRecord::RecordNotFound, AuthenticationTokenService::UserTokenError
       nil
     end
   end
