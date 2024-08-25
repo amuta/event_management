@@ -32,5 +32,8 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
+# Also ignore encrypted credentials as it is not shared
+/config/credentials.yml.enc
+
 # Ignore byebug
 .byebug_history
