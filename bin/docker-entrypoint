@@ -1,8 +1,16 @@
 #!/bin/bash -e
 
-# If running the rails server then create or migrate existing database
-if [ "${1}" == "./bin/rails" ] && [ "${2}" == "server" ]; then
-  ./bin/rails db:prepare
-fi
+# Use provided EMAIL and PASSWORD or defaults
+export EMAIL="${EMAIL:-admin@example.com}"
+export PASSWORD="${PASSWORD:-password}"
 
-exec "${@}"
+# Remove a potentially pre-existing server.pid for Rails.
+rm -f /rails/tmp/pids/server.pid
+
+# Run database migrations and setup tasks
+bundle exec rails db:create db:migrate
+bundle exec rails setup:seed_roles
+bundle exec rails setup:create_admin_user
+
+# Start the server
+bundle exec rails server -b 0.0.0.0
