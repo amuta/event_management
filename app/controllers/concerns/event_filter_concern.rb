@@ -4,8 +4,12 @@ module EventFilterConcern
   included do
     def filter(events)
       if params[:user_id].present?
-        user_id = Integer(params[:user_id]) rescue nil
-        events = events.where(user_id: user_id) if user_id
+        user_id = begin
+          Integer(params[:user_id])
+        rescue StandardError
+          nil
+        end
+        events = events.where(user_id:) if user_id
       end
 
       if params[:start_time].present?
@@ -34,7 +38,9 @@ module EventFilterConcern
     private
 
     def parse_datetime(datetime_str)
-      DateTime.parse(datetime_str) rescue nil
+      DateTime.parse(datetime_str)
+    rescue StandardError
+      nil
     end
 
     def sanitize_sql_like(string)
