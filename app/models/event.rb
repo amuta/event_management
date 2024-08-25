@@ -7,7 +7,7 @@ class Event < ApplicationRecord
   validates :location, presence: true
   validates :start_time, presence: true
   validates :end_time, presence: true
-  validate :end_time_after_start_time
+  validate :end_time_after_start_time, if: -> { start_time && end_time }
 
   def as_json
     {
