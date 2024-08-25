@@ -10,18 +10,18 @@ Things you may want to cover:
 ruby-3.3.0
 ```
 
-* Configuration
-```ruby
-rake setup:generate_secret_key
-rake setup:seed_roles
-rake setup:create_admin_user
-```
-
 * Database creation
 ```ruby
 rake db:create db:migrate
 ```
-* Database with seed data
+
+* Configuration
+```ruby
+rake setup:seed_roles
+rake setup:create_admin_user
+```
+
+* Database with seed data (fake users and events)
 ```ruby
 rake db:seed
 ```
