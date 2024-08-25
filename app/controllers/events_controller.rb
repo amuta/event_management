@@ -57,7 +57,7 @@ class EventsController < ApplicationController
   end
 
   def authorize_user!
-    return if current_user_roles.any? { |role| role.permits?('__modify_any_event__') }
+    return if user_allowed?('__modify_any_event__')
     return if event_belongs_to_user?(@event)
 
     render_errors('You are not authorized to perform this action', status: :unauthorized)

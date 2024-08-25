@@ -4,14 +4,18 @@ class ApplicationController < ActionController::API
   def authenticate_user!
     @current_user = authorize_request
 
-    @current_user_roles = @current_user&.roles || Role.none
-
     return if @current_user
 
     render_errors('Unauthorized', status: :unauthorized)
   end
 
-  attr_reader :current_user, :current_user_roles
+  def user_allowed?(behavior)
+    return false unless current_user
+
+    current_user.roles.any? { |role| role.permits?(behavior) }
+  end
+
+  attr_reader :current_user
 
   def paginate(collection)
     collection.page(params[:page]).per(params[:per_page])
