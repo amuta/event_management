@@ -1,7 +1,7 @@
 class AuthenticationTokenService
   class UserTokenError < StandardError; end
 
-  SECRET_KEY = Rails.application.credentials.dig(:secret_key_base).to_s
+  SECRET_KEY = Rails.application.secret_key_base
   DEFAULT_EXPIRATION_TIME = 3.days
 
   def self.encode(user_id, exp = DEFAULT_EXPIRATION_TIME.from_now)
