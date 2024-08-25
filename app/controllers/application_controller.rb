@@ -17,10 +17,6 @@ class ApplicationController < ActionController::API
 
   attr_reader :current_user
 
-  def paginate(collection)
-    collection.page(params[:page]).per(params[:per_page])
-  end
-
   private
 
   def authorize_request

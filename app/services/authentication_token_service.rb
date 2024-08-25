@@ -1,4 +1,6 @@
 class AuthenticationTokenService
+  class UserTokenError < StandardError; end
+
   SECRET_KEY = Rails.application.credentials.dig(:secret_key_base).to_s
   DEFAULT_EXPIRATION_TIME = 3.days
 
@@ -13,6 +15,6 @@ class AuthenticationTokenService
     decoded = JWT.decode(token, SECRET_KEY).first
     HashWithIndifferentAccess.new(decoded)
   rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError => e
-    raise e.class, e.message
+    raise UserTokenError, e.message
   end
 end

@@ -6,19 +6,26 @@ application up and running.
 Things you may want to cover:
 
 * Ruby version
-
-* System dependencies
+```ruby
+ruby-3.3.0
+```
 
 * Configuration
+```ruby
+rake setup:generate_secret_key
+rake setup:seed_roles
+rake setup:create_admin_user
+```
 
 * Database creation
-
-* Database initialization
-
+```ruby
+rake db:create db:migrate
+```
+* Database with seed data
+```ruby
+rake db:seed
+```
 * How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+```ruby
+rspec spec
+```

@@ -3,7 +3,8 @@ class EventsController < ApplicationController
 
   skip_before_action :authenticate_user!, only: %i[index show]
   before_action :set_event, only: %i[show update destroy]
-  before_action :authorize_user!, only: %i[update destroy]
+  before_action :authorize_update!, only: [:update]
+  before_action :authorize_destroy!, only: [:destroy]
 
   # GET /events
   def index
@@ -56,11 +57,18 @@ class EventsController < ApplicationController
     params.require(:event).permit(:name, :description, :location, :start_time, :end_time)
   end
 
-  def authorize_user!
-    return if user_allowed?('__modify_any_event__')
+  def authorize_update!
+    return if user_allowed?('__update_any_event__')
     return if event_belongs_to_user?(@event)
 
-    render_errors('You are not authorized to perform this action', status: :unauthorized)
+    render_errors('Only the user who created the event can update it', status: :unauthorized)
+  end
+
+  def authorize_destroy!
+    return if user_allowed?('__delete_any_event__')
+    return if event_belongs_to_user?(@event)
+
+    render_errors('Only the user who created the event can delete it', status: :unauthorized)
   end
 
   def event_belongs_to_user?(event)

@@ -4,6 +4,201 @@ info:
   title: API V1
   version: v1
 paths:
+  "/admin/users":
+    get:
+      summary: Retrieves all users
+      tags:
+      - Admin
+      parameters:
+      - name: page
+        in: query
+        description: Page number
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of users per page
+        schema:
+          type: integer
+      - name: Authorization
+        in: header
+        description: JWT Token
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Users retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        email:
+                          type: string
+                        created_at:
+                          type: string
+                          format: date-time
+                        updated_at:
+                          type: string
+                          format: date-time
+                  page:
+                    type: integer
+                  total_pages:
+                    type: integer
+        '401':
+          description: Unauthorized
+  "/admin/roles":
+    get:
+      summary: Retrieves all roles
+      tags:
+      - Admin
+      parameters:
+      - name: Authorization
+        in: header
+        description: JWT Token
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Roles retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  roles:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        permissions:
+                          type: Array
+                          items:
+                            type: string
+                            example: __add_user_role__
+                        created_at:
+                          type: string
+                          format: date-time
+                        updated_at:
+                          type: string
+                          format: date-time
+                  page:
+                    type: integer
+                  total_pages:
+                    type: integer
+        '401':
+          description: Unauthorized
+  "/admin/users/{user_id}/roles":
+    get:
+      summary: Retrieves roles for a specific user
+      tags:
+      - Admin
+      parameters:
+      - name: user_id
+        in: path
+        description: User ID
+        required: true
+        schema:
+          type: integer
+      - name: Authorization
+        in: header
+        description: JWT Token
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Roles retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    permissions:
+                      type: array
+                      items:
+                        type: string
+        '401':
+          description: Unauthorized
+  "/admin/users/{user_id}/roles/{role_id}/add":
+    post:
+      summary: Adds a role to a specific user
+      tags:
+      - Admin
+      parameters:
+      - name: user_id
+        in: path
+        description: User ID
+        required: true
+        schema:
+          type: integer
+      - name: role_id
+        in: path
+        description: Role ID
+        required: true
+        schema:
+          type: integer
+      - name: Authorization
+        in: header
+        description: JWT Token
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Role added successfully
+        '401':
+          description: Unauthorized
+  "/admin/users/{user_id}/roles/{role_id}/remove":
+    delete:
+      summary: Removes a role from a specific user
+      tags:
+      - Admin
+      parameters:
+      - name: user_id
+        in: path
+        description: User ID
+        required: true
+        schema:
+          type: integer
+      - name: role_id
+        in: path
+        description: Role ID
+        required: true
+        schema:
+          type: integer
+      - name: Authorization
+        in: header
+        description: JWT Token
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Role removed successfully
+        '401':
+          description: Unauthorized
   "/signup":
     post:
       summary: Creates a user and returns an authentication token
@@ -125,7 +320,8 @@ paths:
               - password
   "/events":
     get:
-      summary: Retrieves a list of events
+      summary: Retrieves a list of events filtered by user ID, start time, end time,
+        name, and location
       tags:
       - Events
       parameters:
