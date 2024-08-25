@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: event_management_api:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - db-data:/rails/storage  # Persist the SQLite database
+    environment:
+      RAILS_ENV: development
+      EMAIL: ${EMAIL:-admin@example.com}        # Default email
+      PASSWORD: ${PASSWORD:-password}           # Default password
+    networks:
+      - app-network
+    entrypoint: ["./bin/docker-entrypoint"]
+
+volumes:
+  db-data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
