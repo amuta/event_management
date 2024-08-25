@@ -8,12 +8,13 @@ class User < ApplicationRecord
 
   # Associations
   has_many :events, dependent: :destroy
+  has_and_belongs_to_many :roles
 
   # Callbacks
   before_save :downcase_email
 
   def auth_token
-    AuthenticationTokenService.encode(self.id)
+    AuthenticationTokenService.encode(id)
   end
 
   private
@@ -21,5 +22,4 @@ class User < ApplicationRecord
   def downcase_email
     self.email = email.downcase if email.present?
   end
-
 end
