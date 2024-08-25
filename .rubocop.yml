@@ -32,6 +32,7 @@ Naming/PredicateName:
 
 # Global exclusions
 AllCops:
+  NewCops: enable
   Exclude:
     - 'bin/*'
     - 'db/schema.rb'
