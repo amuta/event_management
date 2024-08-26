@@ -34,6 +34,11 @@ module Admin
 
     # POST /admin/users/:user_id/roles/:role_id/add
     def add_user_role
+      if @user.roles.include?(@role)
+        render json: { message: 'Role already added.' }, status: :ok
+        return
+      end
+
       if @user.roles << @role
         render json: { message: 'Role added successfully.' }, status: :ok
       else

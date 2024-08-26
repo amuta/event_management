@@ -35,7 +35,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_08_25_001155) do
     t.integer "user_id", null: false
     t.integer "role_id", null: false
     t.index ["role_id", "user_id"], name: "index_roles_users_on_role_id_and_user_id"
-    t.index ["user_id", "role_id"], name: "index_roles_users_on_user_id_and_role_id"
+    t.index ["user_id", "role_id"], name: "index_roles_users_on_user_id_and_role_id", unique: true
   end
 
   create_table "users", force: :cascade do |t|

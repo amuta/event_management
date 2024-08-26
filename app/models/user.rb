@@ -10,7 +10,7 @@ class User < ApplicationRecord
 
   # Associations
   has_many :events, dependent: :destroy
-  has_and_belongs_to_many :roles
+  has_and_belongs_to_many :roles, uniq: true
 
   # Callbacks
   before_save :downcase_email
